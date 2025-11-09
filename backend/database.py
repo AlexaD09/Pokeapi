@@ -4,21 +4,21 @@ from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
 import os
 
-# Cargar variables desde el entorno
+# Load variables from the environment
 load_dotenv()
 
-# Usa la URL que Railway ya define automáticamente
+
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 if not DATABASE_URL:
-    raise ValueError("❌ DATABASE_URL no está definida en el entorno")
+    raise ValueError("❌ DATABASE_URL is not defined in the environment")
 
-# Crear conexión a la base de datos
+# Create a connection to the database
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
-# Dependencia para obtener sesión
+# Dependency to obtain session
 def get_db():
     db = SessionLocal()
     try:
