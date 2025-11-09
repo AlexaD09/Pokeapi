@@ -1,24 +1,24 @@
-# Imagen base
+# Base image
 FROM node:18
 
-# Crear carpeta de trabajo
+# Create working folder
 WORKDIR /app
 
-# Copiar archivos de dependencias primero
+# Copy dependency files first
 COPY package*.json ./
 
-# Instalar dependencias
+# Install dependencies
 RUN npm install
 
-# Copiar el resto del código del frontend
+# copy the rest of the frontend code
 COPY . .
 
-# Compilar la aplicación
+# Compile the application
 RUN npm run build
 
-# Servir la aplicación
+# Serve the application
 RUN npm install -g serve
 CMD ["serve", "-s", "build"]
 
-# Exponer el puerto 3000
+# Expose port 3000
 EXPOSE 3000

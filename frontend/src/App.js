@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Login from "./components/Login";
 import Cards from "./components/Cards";
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -11,7 +12,7 @@ function App() {
   const handleLogin = async (username, password) => {
     setLoginError("");
     try {
-      const response = await fetch("http://localhost:8000/login", {
+      const response = await fetch(`${BACKEND_URL}//login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
@@ -31,7 +32,7 @@ function App() {
   // Function to register user
   const handleRegister = async (username, password) => {
     try {
-      const response = await fetch("http://localhost:8000/register", {
+      const response = await fetch(`${BACKEND_URL}/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
@@ -45,7 +46,7 @@ function App() {
 
   // Save search in PostgreSQL
   const saveSearchToDB = async (username, query) => {
-    await fetch("http://localhost:8000/save-search", {
+    await fetch(`${BACKEND_URL}/save-search`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, query }),
