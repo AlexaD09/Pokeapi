@@ -1,0 +1,167 @@
+/* 🌈 Fondo general */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #ffe6e6, #fff0f0);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+}
+
+/* 🔹 App container general */
+.App {
+  text-align: center;
+  padding: 30px;
+  width: 100%;
+  max-width: 1200px;
+}
+
+/* 🔸 Título principal */
+h1 {
+  color: #ef5350;
+  font-size: 2.5em;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+/* 🃏 Contenedor de las tarjetas */
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+/* 🧩 Tarjeta individual */
+.card {
+  background: #fff;
+  border-radius: 15px;
+  width: 220px;
+  padding: 15px;
+  box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+  transition: transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.card:hover {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 12px 20px rgba(0,0,0,0.3);
+}
+
+/* 🖼️ Imagen de Pokémon */
+.pokemon-img {
+  width: 130px;
+  height: 130px;
+  margin-bottom: 10px;
+}
+
+/* 📛 Nombre */
+.card h3 {
+  margin: 5px 0;
+  color: #333;
+  text-transform: capitalize;
+}
+
+/* 📋 Detalles */
+.card p {
+  margin: 2px 0;
+  font-size: 0.9em;
+  color: #555;
+}
+
+/* 🔍 Área de búsqueda */
+.search-area {
+  margin-top: 50px;
+  padding: 30px 0;
+  border-top: 3px solid #ef5350;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.search-area h2 {
+  color: #ef5350;
+  margin-bottom: 15px;
+  font-size: 1.5em;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+}
+
+.search-input {
+  padding: 12px 15px;
+  width: 280px;
+  border-radius: 25px;
+  border: 2px solid #ef5350;
+  font-size: 1em;
+  outline: none;
+  transition: 0.3s;
+}
+
+.search-input:focus {
+  border-color: #ff8a65;
+  box-shadow: 0 0 8px rgba(255, 138, 101, 0.5);
+}
+
+/* 🔐 Login y Register */
+.auth-container {
+  background: white;
+  padding: 40px 30px;
+  border-radius: 20px;
+  box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+  max-width: 400px;
+  width: 100%;
+  margin: 60px auto;
+  text-align: center;
+}
+
+.auth-container h1 {
+  color: #ef5350;
+  margin-bottom: 20px;
+}
+
+.auth-input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 25px;
+  border: 2px solid #ef5350;
+  font-size: 1em;
+  outline: none;
+  transition: border 0.3s;
+}
+
+.auth-input:focus {
+  border-color: #ff8a65;
+  box-shadow: 0 0 8px rgba(255, 138, 101, 0.5);
+}
+
+.auth-button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 25px;
+  font-size: 1em;
+  color: white;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.auth-button:hover {
+  transform: scale(1.05);
+}
+
+.auth-button.login {
+  background: #ef5350;
+}
+
+.auth-button.register {
+  background: #66bb6a;
+}
+
+.error-text {
+  color: red;
+  margin-top: 10px;
+}
