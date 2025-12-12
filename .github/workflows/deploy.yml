@@ -41,6 +41,7 @@ jobs:
 
         # List all public IPs of running instances with tag Name=pokeapi-instance
         IPS=$(aws ec2 describe-instances \
+              --region us-east-1 \
               --filters "Name=tag:Name,Values=pokeapi-instance" "Name=instance-state-name,Values=running" \
               --query "Reservations[*].Instances[*].PublicIpAddress" \
               --output text)
