@@ -28,7 +28,7 @@ jobs:
     - name: Build Frontend Image
       run: |
         docker build -t alexa1209/pokeapi-app-frontend:latest frontend
-        docker push alexa1209/pokeapi-app-frontend:latest
+        docker push alexa1209/pokeapi-app-frontend:latest 
 
     - name: Set AWS Credentials
       run: |
