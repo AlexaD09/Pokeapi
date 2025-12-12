@@ -1,0 +1,9 @@
+backend/.env
+backend/__pycache__/
+backend/pokeapi-env/
+
+# Ignorar Terraform
+terraform/.terraform/
+terraform/.terraform.lock.hcl
+terraform/terraform.tfstate
+terraform/terraform.tfstate.backup
