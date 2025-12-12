@@ -16,25 +16,19 @@ services:
       - pokemon-net
 
   backend:
-    build:
-      context: ./backend  
-      dockerfile: Dockerfile
+    image: alexa1209/pokeapi-app-backend:latest
     container_name: pokemon-backend
     ports:
-      - "8000:8000"
-    volumes:
-      - ./backend:/app
+      - "80:8000"
     environment:
-     - DATABASE_URL=postgresql://postgres:Liliana0912@db:5432/pokemon_db
+      - DATABASE_URL=postgresql://postgres:Liliana0912@db:5432/pokemon_db
     depends_on:
       - db
     networks:
       - pokemon-net
 
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+    image: alexa1209/pokeapi-app-frontend:latest
     container_name: pokemon-frontend
     ports:
       - "3000:3000"
@@ -42,6 +36,7 @@ services:
       - backend
     networks:
       - pokemon-net
+
 
 networks:
   pokemon-net:
