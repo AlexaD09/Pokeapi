@@ -49,6 +49,7 @@ jobs:
         for ip in $IPS; do
           echo "Deploying to $ip"
           
+          ssh -o StrictHostKeyChecking=no -i ${{ secrets.EC2_SSH_KEY }} ec2-user@$ip "mkdir -p /home/ec2-user/app"
           # Copiar docker-compose.yml y carpetas backend/frontend a la instancia
           scp -o StrictHostKeyChecking=no -i ${{ secrets.EC2_SSH_KEY }} -r docker-compose.yml backend frontend ec2-user@$ip:/home/ec2-user/app
 
