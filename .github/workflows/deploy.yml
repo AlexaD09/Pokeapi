@@ -37,6 +37,12 @@ jobs:
         echo "AWS_SESSION_TOKEN=${{ secrets.AWS_SESSION_TOKEN }}" >> $GITHUB_ENV
         echo "AWS_DEFAULT_REGION=us-east-1" >> $GITHUB_ENV    
     
+    - name: Setup SSH Key
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        
     - name: Deploy to EC2 instances using tag
       run: |
         # Install AWS CLI v2 if not present
