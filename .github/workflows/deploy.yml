@@ -29,3 +29,30 @@ jobs:
       run: |
         docker build -t alexa1209/pokeapi-app-frontend:latest frontend
         docker push alexa1209/pokeapi-app-frontend:latest
+    
+    - name: Deploy to EC2 instances using tag
+      run: |
+        # Install AWS CLI v2 if not present
+        if ! command -v aws &> /dev/null; then
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          unzip awscliv2.zip
+          sudo ./aws/install
+        fi
+
+        # List all public IPs of running instances with tag Name=pokeapi-instance
+        IPS=$(aws ec2 describe-instances \
+              --filters "Name=tag:Name,Values=pokeapi-instance" "Name=instance-state-name,Values=running" \
+              --query "Reservations[*].Instances[*].PublicIpAddress" \
+              --output text)
+
+        # Deploy to each instance
+        for ip in $IPS; do
+          echo "Deploying to $ip"
+          
+          # Copiar docker-compose.yml y carpetas backend/frontend a la instancia
+          scp -o StrictHostKeyChecking=no -i ${{ secrets.EC2_SSH_KEY }} -r docker-compose.yml backend frontend ec2-user@$ip:/home/ec2-user/app
+
+          # Ejecutar docker-compose en la instancia
+          ssh -o StrictHostKeyChecking=no -i ${{ secrets.EC2_SSH_KEY }} ec2-user@$ip \
+            "cd /home/ec2-user/app && docker-compose pull && docker-compose up -d"
+        done

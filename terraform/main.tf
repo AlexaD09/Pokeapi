@@ -157,70 +157,63 @@ resource "aws_lb_listener" "http" {
   }
 }
 
-# User data to install Docker + Docker Compose + run app
-locals {
-  user_data = <<-EOF
-    #!/bin/bash
-    set -e
+# Search AMI the Amazon Linux 2
+data "aws_ami" "amazon_linux" {
+  most_recent = true
+  owners      = ["amazon"]  
 
-    # Update packages
-    apt-get update -y
-    apt-get install -y docker.io curl
-
-    systemctl enable docker
-    systemctl start docker
-
-    # Install docker-compose (standalone binary)
-    curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-    chmod +x /usr/local/bin/docker-compose
-
-    # Create app directory
-    mkdir -p /home/ubuntu/app
-    cat > /home/ubuntu/app/docker-compose.yml << 'EOC'
-    version: "3.8"
-    services:
-      db:
-        image: postgres:15
-        environment:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: "Liliana0912"
-          POSTGRES_DB: pokemon_db
-        volumes:
-          - pgdata:/var/lib/postgresql/data
-
-      backend:
-        image: alexa1209/pokeapi-app-backend:latest
-        environment:
-          - DATABASE_URL=postgresql://postgres:Liliana0912@db:5432/pokemon_db
-        depends_on:
-          - db
-
-      frontend:
-        image: alexa1209/pokeapi-app-frontend:latest
-        depends_on:
-          - backend
-        ports:
-          - "80:3000"
-
-    volumes:
-      pgdata:
-    networks:
-      default:
-        driver: bridge
-    EOC
-
-    cd /home/ubuntu/app
-    /usr/local/bin/docker-compose up -d
-  EOF
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-hvm-*-x86_64-gp2"]
+  }
 }
 
-# Launch Template
+# New password SSH
+resource "tls_private_key" "ec2_key" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
+resource "aws_key_pair" "ec2_key" {
+  key_name   = "pokeapi-key"
+  public_key = tls_private_key.ec2_key.public_key_openssh
+}
+
+# Guardar la clave privada en un archivo local (opcional, solo para pruebas locales)
+resource "local_file" "private_key" {
+  content  = tls_private_key.ec2_key.private_key_pem
+  filename = "${path.module}/pokeapi-key.pem"
+  file_permission = "0600"
+}
+
+
+# -------------------------
+# Launch Template con user_data
+# -------------------------
 resource "aws_launch_template" "lt" {
   name_prefix   = "pokeapi-lt-"
-  image_id      = "ami-0c02fb55956c7d316"
+  image_id      = data.aws_ami.amazon_linux.id
   instance_type = "t2.micro"
-  user_data     = base64encode(local.user_data)
   vpc_security_group_ids = [aws_security_group.asg_sg.id]
+  key_name = aws_key_pair.ec2_key.key_name
+
+
+  user_data = base64encode(<<EOF
+#!/bin/bash
+set -e
+
+# Update and install Docker
+yum update -y
+yum install -y docker curl
+systemctl enable docker
+systemctl start docker
+usermod -aG docker ec2-user
+
+# Install docker-compose
+curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
+EOF
+)
 }
 
 # Auto Scaling Group
@@ -273,7 +266,7 @@ resource "aws_autoscaling_policy" "scale_out_cpu" {
   adjustment_type        = "ChangeInCapacity"
   scaling_adjustment     = 1
   cooldown               = 60
-  alarm_names            = [aws_cloudwatch_metric_alarm.cpu_high.alarm_name]
+  
 }
 
 # -------------------------
@@ -301,7 +294,7 @@ resource "aws_autoscaling_policy" "scale_out_memory" {
   adjustment_type        = "ChangeInCapacity"
   scaling_adjustment     = 1
   cooldown               = 60
-  alarm_names            = [aws_cloudwatch_metric_alarm.memory_high.alarm_name]
+  
 }
 
 # -------------------------
@@ -330,7 +323,7 @@ resource "aws_autoscaling_policy" "scale_out_network" {
   adjustment_type        = "ChangeInCapacity"
   scaling_adjustment     = 1
   cooldown               = 60
-  alarm_names            = [aws_cloudwatch_metric_alarm.network_high.alarm_name]
+  
 }
 
 
@@ -360,7 +353,4 @@ output "target_group_arn" {
   value = aws_lb_target_group.tg.arn
 }
 
-//Change
-output "asg_instance_ids" {
-  value = aws_autoscaling_group.asg.instances
-}
+
