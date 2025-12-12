@@ -29,6 +29,13 @@ jobs:
       run: |
         docker build -t alexa1209/pokeapi-app-frontend:latest frontend
         docker push alexa1209/pokeapi-app-frontend:latest
+
+    - name: Set AWS Credentials
+      run: |
+        echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
+        echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV
+        echo "AWS_SESSION_TOKEN=${{ secrets.AWS_SESSION_TOKEN }}" >> $GITHUB_ENV
+        echo "AWS_DEFAULT_REGION=us-east-1" >> $GITHUB_ENV    
     
     - name: Deploy to EC2 instances using tag
       run: |
@@ -41,7 +48,6 @@ jobs:
 
         # List all public IPs of running instances with tag Name=pokeapi-instance
         IPS=$(aws ec2 describe-instances \
-              --region us-east-1 \
               --filters "Name=tag:Name,Values=pokeapi-instance" "Name=instance-state-name,Values=running" \
               --query "Reservations[*].Instances[*].PublicIpAddress" \
               --output text)
