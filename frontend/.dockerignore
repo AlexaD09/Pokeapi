@@ -1,0 +1,30 @@
+# Dependencias (se instalan dentro del contenedor)
+node_modules/
+
+
+# Salida de producción (se genera en el contenedor)
+build/
+dist/
+out/
+.next/
+
+# Testing
+coverage/
+
+# Herramientas y cachés
+.pnp
+.pnp.js
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.cache/
+.parcel-cache/
+
+# Sistema e IDE
+.git
+.gitignore
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Login from "./components/Login";
 import Cards from "./components/Cards";
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const BACKEND_URL = window.RUNTIME_CONFIG?.BACKEND_URL
 
 console.log("Backend URL:", BACKEND_URL);
 
@@ -35,7 +35,7 @@ function App() {
   // Function to register user
   const handleRegister = async (username, password) => {
     try {
-      const response = await fetch(`${BACKEND_URL}/register`, {
+      const response = await fetch(`/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),

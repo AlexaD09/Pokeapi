@@ -1,0 +1,25 @@
+# Archivos de entorno (¡nunca deben ir en la imagen!)
+
+
+# Caché de Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Entornos virtuales
+venv/
+.venv/
+env/
+ENV/
+
+# Herramientas y logs
+.git
+.gitignore
+*.log
+.DS_Store
+Thumbs.db
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
