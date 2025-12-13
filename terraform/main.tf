@@ -207,6 +207,8 @@ resource "aws_autoscaling_group" "asg" {
 }
 
 # Scaling Policies (opcional, puedes mantenerlas)
+
+
 resource "aws_cloudwatch_metric_alarm" "cpu_high" {
   alarm_name          = "high-cpu"
   comparison_operator = "GreaterThanThreshold"
@@ -223,6 +225,57 @@ resource "aws_cloudwatch_metric_alarm" "cpu_high" {
 
 resource "aws_autoscaling_policy" "scale_out_cpu" {
   name                   = "scale-out-cpu"
+  autoscaling_group_name = aws_autoscaling_group.asg.name
+  adjustment_type        = "ChangeInCapacity"
+  scaling_adjustment     = 1
+  cooldown               = 60
+}
+
+# -------------------------
+# MEMORY SCALING POLICY
+# -------------------------
+resource "aws_cloudwatch_metric_alarm" "memory_high" {
+  alarm_name          = "high-memory"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = 2
+  metric_name         = "mem_used_percent"
+  namespace           = "CWAgent"
+  period              = 60
+  statistic           = "Average"
+  threshold           = 75
+  dimensions = {
+    AutoScalingGroupName = aws_autoscaling_group.asg.name
+  }
+}
+
+resource "aws_autoscaling_policy" "scale_out_memory" {
+  name                   = "scale-out-memory"
+  autoscaling_group_name = aws_autoscaling_group.asg.name
+  adjustment_type        = "ChangeInCapacity"
+  scaling_adjustment     = 1
+  cooldown               = 60
+}
+
+# -------------------------
+# NETWORK (REQUESTS) POLICY
+# -------------------------
+resource "aws_cloudwatch_metric_alarm" "network_high" {
+  alarm_name          = "high-network-requests"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = 2
+  metric_name         = "RequestCountPerTarget"
+  namespace           = "AWS/ApplicationELB"
+  period              = 60
+  statistic           = "Sum"
+  threshold           = 100
+  dimensions = {
+    TargetGroup  = aws_lb_target_group.tg.arn_suffix
+    LoadBalancer = aws_lb.app_lb.arn_suffix
+  }
+}
+
+resource "aws_autoscaling_policy" "scale_out_network" {
+  name                   = "scale-out-network"
   autoscaling_group_name = aws_autoscaling_group.asg.name
   adjustment_type        = "ChangeInCapacity"
   scaling_adjustment     = 1
