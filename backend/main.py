@@ -81,3 +81,8 @@ async def get_user_searches(username: str, db: Session = Depends(get_db)):
     except Exception as e:
         print(f"Error en get-user-searches: {e}")
         return []
+
+# Health check endpoint for ALB
+@app.get("/")
+async def health_check():
+    return {"status": "healthy", "service": "pokeapi-backend"}
