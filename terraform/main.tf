@@ -167,22 +167,7 @@ data "aws_ami" "amazon_linux" {
   }
 }
 
-# Key Pair
-resource "tls_private_key" "ec2_key" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}
 
-resource "aws_key_pair" "ec2_key" {
-  key_name   = "pokeapi-key"
-  public_key = tls_private_key.ec2_key.public_key_openssh
-}
-
-resource "local_file" "private_key" {
-  content         = tls_private_key.ec2_key.private_key_pem 
-  filename        = "${path.module}/pokeapi-key.pem"
-  file_permission = "0600"
-}
 
 # Launch Template con user_data desde archivo
 resource "aws_launch_template" "lt" {
@@ -190,7 +175,7 @@ resource "aws_launch_template" "lt" {
   image_id               = data.aws_ami.amazon_linux.id
   instance_type          = "t2.micro"
   vpc_security_group_ids = [aws_security_group.asg_sg.id]
-  key_name               = aws_key_pair.ec2_key.key_name
+ 
 
   # 👇 Load usedata👇#
   user_data = base64encode(file("${path.module}/user_data.sh"))
