@@ -1,44 +1,42 @@
 #############################
-#TERRAFORM MAIN CONFIGURATION
+# TERRAFORM MAIN CONFIGURATION
 ##############################
 
 terraform {
   required_providers { 
-#Wich provider to use
     aws = {
-      source  = "hashicorp/aws" //Who maintains the supplier
-      version = "~> 5.0" //Any version 5.x is allowed
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
     }
   }
-  required_version = ">= 1.3.0" //Minimum version of terraform requerired
+  required_version = ">= 1.3.0"
 }
+
 #######################
 # AWS PROVIDER 
 #######################
-#Indicated in which region the resources will be created
 provider "aws" {
   region = "us-east-1"
 }
 
 #####################
-#  MAIN VPC 
+# MAIN VPC 
 #################
-
 resource "aws_vpc" "main" {
-  cidr_block           = "10.0.0.0/16" //Private IPs range
-  enable_dns_support   = true //Allows AWS to return internal dns
-  enable_dns_hostnames = true //Alloes dns names within the VCP
-  tags = { Name = "pokeapi-vpc" }  //Name of the VCP within AWS
- }
+  cidr_block           = "10.0.0.0/16"
+  enable_dns_support   = true
+  enable_dns_hostnames = true
+  tags = { Name = "pokeapi-vpc" }
+}
 
 ###################
 # Subnets (public)
 ###################
 resource "aws_subnet" "public_a" {
-  vpc_id                  = aws_vpc.main.id //Wich VPC does it belong to
-  cidr_block              = "10.0.1.0/24" //Ip range within the VPC
-  availability_zone       = "us-east-1a" //AZ where the sunet is created
-  map_public_ip_on_launch = true // Automatically assiigns a public IP address
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.0.1.0/24"
+  availability_zone       = "us-east-1a"
+  map_public_ip_on_launch = true
 }
 
 resource "aws_subnet" "public_b" {
@@ -51,14 +49,12 @@ resource "aws_subnet" "public_b" {
 #################################
 # Internet Gateway + Route table
 #################################
-
 resource "aws_internet_gateway" "igw" {
-  vpc_id = aws_vpc.main.id  //Conect the VPC to public internet 
+  vpc_id = aws_vpc.main.id
 }
 
 resource "aws_route_table" "rt" {
   vpc_id = aws_vpc.main.id
-
   route {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.igw.id
@@ -76,18 +72,25 @@ resource "aws_route_table_association" "b" {
 }
 
 ################################################
-# Security Group - allow HTTP (80) and SSH (22)
+# Security Group - allow HTTP, HTTPS, SSH
 ################################################
-
 resource "aws_security_group" "asg_sg" {
   name        = "pokeapi-sg"
-  description = "Allow HTTP and SSH"
+  description = "Allow HTTP, HTTPS and SSH"
   vpc_id      = aws_vpc.main.id
 
   ingress {
     description = "HTTP"
     from_port   = 80
     to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "HTTPS"
+    from_port   = 443
+    to_port     = 443
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -113,7 +116,6 @@ resource "aws_security_group" "asg_sg" {
 ##################
 # Load Balancer
 #################
-
 resource "aws_lb" "app_lb" {
   name               = "pokeapi-lb"
   internal           = false
@@ -126,7 +128,6 @@ resource "aws_lb" "app_lb" {
 ##################
 # Target Group
 #################
-
 resource "aws_lb_target_group" "tg" {
   name        = "pokeapi-tg"
   port        = 80
@@ -145,30 +146,28 @@ resource "aws_lb_target_group" "tg" {
   }
 }
 
-# Listener
+# Listener HTTP
 resource "aws_lb_listener" "http" {
   load_balancer_arn = aws_lb.app_lb.arn
   port              = 80
   protocol          = "HTTP"
-
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.tg.arn
   }
 }
 
-# Search AMI the Amazon Linux 2
+# AMI Amazon Linux 2
 data "aws_ami" "amazon_linux" {
   most_recent = true
-  owners      = ["amazon"]  
-
+  owners      = ["amazon"]
   filter {
     name   = "name"
     values = ["amzn2-ami-hvm-*-x86_64-gp2"]
   }
 }
 
-# New password SSH
+# Key Pair
 resource "tls_private_key" "ec2_key" {
   algorithm = "RSA"
   rsa_bits  = 4096
@@ -179,41 +178,22 @@ resource "aws_key_pair" "ec2_key" {
   public_key = tls_private_key.ec2_key.public_key_openssh
 }
 
-# Guardar la clave privada en un archivo local (opcional, solo para pruebas locales)
 resource "local_file" "private_key" {
-  content  = tls_private_key.ec2_key.private_key_pem
-  filename = "${path.module}/pokeapi-key.pem"
+  content         = tls_private_key.ec2_key.private_key_pem 
+  filename        = "${path.module}/pokeapi-key.pem"
   file_permission = "0600"
 }
 
-
-# -------------------------
-# Launch Template con user_data
-# -------------------------
+# Launch Template con user_data desde archivo
 resource "aws_launch_template" "lt" {
-  name_prefix   = "pokeapi-lt-"
-  image_id      = data.aws_ami.amazon_linux.id
-  instance_type = "t2.micro"
+  name_prefix            = "pokeapi-lt-"
+  image_id               = data.aws_ami.amazon_linux.id
+  instance_type          = "t2.micro"
   vpc_security_group_ids = [aws_security_group.asg_sg.id]
-  key_name = aws_key_pair.ec2_key.key_name
+  key_name               = aws_key_pair.ec2_key.key_name
 
-
-  user_data = base64encode(<<EOF
-#!/bin/bash
-set -e
-
-# Update and install Docker
-yum update -y
-yum install -y docker curl
-systemctl enable docker
-systemctl start docker
-usermod -aG docker ec2-user
-
-# Install docker-compose
-curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-chmod +x /usr/local/bin/docker-compose
-EOF
-)
+  # 👇 Load usedata👇#
+  user_data = base64encode(file("${path.module}/user_data.sh"))
 }
 
 # Auto Scaling Group
@@ -241,10 +221,7 @@ resource "aws_autoscaling_group" "asg" {
   }
 }
 
-# -------------------------
-# CPU SCALING POLICY
-# -------------------------
-
+# Scaling Policies (opcional, puedes mantenerlas)
 resource "aws_cloudwatch_metric_alarm" "cpu_high" {
   alarm_name          = "high-cpu"
   comparison_operator = "GreaterThanThreshold"
@@ -254,7 +231,6 @@ resource "aws_cloudwatch_metric_alarm" "cpu_high" {
   period              = 60
   statistic           = "Average"
   threshold           = 70
-
   dimensions = {
     AutoScalingGroupName = aws_autoscaling_group.asg.name
   }
@@ -266,91 +242,10 @@ resource "aws_autoscaling_policy" "scale_out_cpu" {
   adjustment_type        = "ChangeInCapacity"
   scaling_adjustment     = 1
   cooldown               = 60
-  
 }
-
-# -------------------------
-# MEMORY SCALING POLICY
-# -------------------------
-
-resource "aws_cloudwatch_metric_alarm" "memory_high" {
-  alarm_name          = "high-memory"
-  comparison_operator = "GreaterThanThreshold"
-  evaluation_periods  = 2
-  metric_name         = "mem_used_percent"
-  namespace           = "CWAgent"
-  period              = 60
-  statistic           = "Average"
-  threshold           = 75
-
-  dimensions = {
-    AutoScalingGroupName = aws_autoscaling_group.asg.name
-  }
-}
-
-resource "aws_autoscaling_policy" "scale_out_memory" {
-  name                   = "scale-out-memory"
-  autoscaling_group_name = aws_autoscaling_group.asg.name
-  adjustment_type        = "ChangeInCapacity"
-  scaling_adjustment     = 1
-  cooldown               = 60
-  
-}
-
-# -------------------------
-# NETWORK (REQUESTS) POLICY
-# -------------------------
-
-resource "aws_cloudwatch_metric_alarm" "network_high" {
-  alarm_name          = "high-network-requests"
-  comparison_operator = "GreaterThanThreshold"
-  evaluation_periods  = 2
-  metric_name         = "RequestCountPerTarget"
-  namespace           = "AWS/ApplicationELB"
-  period              = 60
-  statistic           = "Sum"
-  threshold           = 100
-
-  dimensions = {
-    TargetGroup  = aws_lb_target_group.tg.arn_suffix
-    LoadBalancer = aws_lb.app_lb.arn_suffix
-  }
-}
-
-resource "aws_autoscaling_policy" "scale_out_network" {
-  name                   = "scale-out-network"
-  autoscaling_group_name = aws_autoscaling_group.asg.name
-  adjustment_type        = "ChangeInCapacity"
-  scaling_adjustment     = 1
-  cooldown               = 60
-  
-}
-
 
 # Output ALB DNS
 output "alb_dns" {
   description = "ALB DNS name"
   value       = aws_lb.app_lb.dns_name
 }
-
-output "vpc_id" {
-  value = aws_vpc.main.id
-}
-
-output "public_subnet_a" {
-  value = aws_subnet.public_a.id
-}
-
-output "public_subnet_b" {
-  value = aws_subnet.public_b.id
-}
-
-output "security_group_id" {
-  value = aws_security_group.asg_sg.id
-}
-
-output "target_group_arn" {
-  value = aws_lb_target_group.tg.arn
-}
-
-

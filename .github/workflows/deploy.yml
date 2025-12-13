@@ -1,71 +1,44 @@
-name: Build and Push Docker Images
+name: Deploy PokeAPI to AWS
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
-  build-and-push:
+  deploy:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Login to Docker Hub
-      uses: docker/login-action@v3
-      with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-    - name: Build Backend Image
-      run: |
-        docker build -t alexa1209/pokeapi-app-backend:latest backend
-        docker push alexa1209/pokeapi-app-backend:latest
+      - name: Build and Push Backend
+        run: |
+          docker build -t alexa1209/pokeapi-app-backend:latest backend
+          docker push alexa1209/pokeapi-app-backend:latest
 
-    - name: Build Frontend Image
-      run: |
-        docker build -t alexa1209/pokeapi-app-frontend:latest frontend
-        docker push alexa1209/pokeapi-app-frontend:latest 
+      - name: Build and Push Frontend
+        run: |
+          docker build -t alexa1209/pokeapi-app-frontend:latest frontend
+          docker push alexa1209/pokeapi-app-frontend:latest
 
-    - name: Set AWS Credentials
-      run: |
-        echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
-        echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV
-        echo "AWS_SESSION_TOKEN=${{ secrets.AWS_SESSION_TOKEN }}" >> $GITHUB_ENV
-        echo "AWS_DEFAULT_REGION=us-east-1" >> $GITHUB_ENV    
-    
-    - name: Setup SSH Key
-      run: |
-        mkdir -p ~/.ssh
-        echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: us-east-1
 
-    - name: Deploy to EC2 instances using tag
-      run: |
-        # Instalar AWS CLI si no está
-        if ! command -v aws &> /dev/null; then
-          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-          unzip awscliv2.zip
-          sudo ./aws/install
-        fi
-
-        # Obtener IPs públicas
-        IPS=$(aws ec2 describe-instances \
-              --filters "Name=tag:Name,Values=pokeapi-instance" "Name=instance-state-name,Values=running" \
-              --query "Reservations[*].Instances[*].PublicIpAddress" \
-              --output text)
-
-        # Usar la clave desde ~/.ssh/id_rsa (ya configurada)
-        for ip in $IPS; do
-          echo "Deploying to $ip"
-          
-          ssh -o StrictHostKeyChecking=no ec2-user@$ip "mkdir -p /home/ec2-user/app"
-          
-          scp -o StrictHostKeyChecking=no -r docker-compose.yml backend frontend ec2-user@$ip:/home/ec2-user/app
-          
-          ssh -o StrictHostKeyChecking=no ec2-user@$ip \
-            "cd /home/ec2-user/app && docker-compose pull && docker-compose up -d"
-        done
+      - name: Trigger ASG Instance Refresh
+        run: |
+          aws autoscaling start-instance-refresh \
+            --auto-scaling-group-name pokeapi-asg \
+            --preferences MinHealthyPercentage=50,InstanceWarmup=120
+          echo "✅ Deployment triggered! New instances will run the latest images."
