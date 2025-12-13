@@ -38,6 +38,8 @@ services:
     container_name: pokemon-frontend
     ports:
       - "3000:3000"
+    environment:
+      - ALB_DNS=${ALB_DNS}
     depends_on:
       - backend
     networks:
