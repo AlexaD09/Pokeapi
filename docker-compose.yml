@@ -38,7 +38,7 @@ services:
     ports:
       - "80:80"
     environment:
-      - ALB_DNS=pokeapi-lb-1566219535.us-east-1.elb.amazonaws.com
+      - ALB_DNS=pokeapi-lb-232256743.us-east-1.elb.amazonaws.com
     depends_on:
       - backend
     networks:
