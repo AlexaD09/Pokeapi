@@ -136,7 +136,7 @@ resource "aws_lb_target_group" "tg" {
   target_type = "instance"
 
   health_check {
-    path                = "/"
+    path                = "/health"
     protocol            = "HTTP"
     matcher             = "200-399"
     interval            = 30
