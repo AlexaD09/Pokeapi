@@ -1,0 +1,1051 @@
+{
+  "version": 4,
+  "terraform_version": "1.14.0",
+  "serial": 465,
+  "lineage": "34105603-a090-98ae-ca7f-89cae7157947",
+  "outputs": {
+    "alb_dns": {
+      "value": "pokeapi-lb-232256743.us-east-1.elb.amazonaws.com",
+      "type": "string"
+    }
+  },
+  "resources": [
+    {
+      "mode": "data",
+      "type": "aws_ami",
+      "name": "amazon_linux",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "architecture": "x86_64",
+            "arn": "arn:aws:ec2:us-east-1::image/ami-03f9680ef0c07a3d1",
+            "block_device_mappings": [
+              {
+                "device_name": "/dev/xvda",
+                "ebs": {
+                  "delete_on_termination": "true",
+                  "encrypted": "false",
+                  "iops": "0",
+                  "snapshot_id": "snap-0b794a1966c45ee7d",
+                  "throughput": "0",
+                  "volume_initialization_rate": "0",
+                  "volume_size": "8",
+                  "volume_type": "gp2"
+                },
+                "no_device": "",
+                "virtual_name": ""
+              }
+            ],
+            "boot_mode": "",
+            "creation_date": "2025-12-03T22:53:36.000Z",
+            "deprecation_time": "2026-03-03T00:00:00.000Z",
+            "description": "Amazon Linux 2 AMI 2.0.20251208.0 x86_64 HVM gp2",
+            "ena_support": true,
+            "executable_users": null,
+            "filter": [
+              {
+                "name": "name",
+                "values": [
+                  "amzn2-ami-hvm-*-x86_64-gp2"
+                ]
+              }
+            ],
+            "hypervisor": "xen",
+            "id": "ami-03f9680ef0c07a3d1",
+            "image_id": "ami-03f9680ef0c07a3d1",
+            "image_location": "amazon/amzn2-ami-hvm-2.0.20251208.0-x86_64-gp2",
+            "image_owner_alias": "amazon",
+            "image_type": "machine",
+            "imds_support": "",
+            "include_deprecated": false,
+            "kernel_id": "",
+            "last_launched_time": "",
+            "most_recent": true,
+            "name": "amzn2-ami-hvm-2.0.20251208.0-x86_64-gp2",
+            "name_regex": null,
+            "owner_id": "137112412989",
+            "owners": [
+              "amazon"
+            ],
+            "platform": "",
+            "platform_details": "Linux/UNIX",
+            "product_codes": [],
+            "public": true,
+            "ramdisk_id": "",
+            "root_device_name": "/dev/xvda",
+            "root_device_type": "ebs",
+            "root_snapshot_id": "snap-0b794a1966c45ee7d",
+            "sriov_net_support": "simple",
+            "state": "available",
+            "state_reason": {
+              "code": "UNSET",
+              "message": "UNSET"
+            },
+            "tags": {},
+            "timeouts": null,
+            "tpm_support": "",
+            "uefi_data": null,
+            "usage_operation": "RunInstances",
+            "virtualization_type": "hvm"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_autoscaling_group",
+      "name": "asg",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:autoscaling:us-east-1:767398146216:autoScalingGroup:863569e7-3522-4d24-a8a0-bca3aadbed40:autoScalingGroupName/pokeapi-asg",
+            "availability_zone_distribution": [
+              {
+                "capacity_distribution_strategy": "balanced-best-effort"
+              }
+            ],
+            "availability_zones": [
+              "us-east-1a",
+              "us-east-1b"
+            ],
+            "capacity_rebalance": false,
+            "capacity_reservation_specification": [
+              {
+                "capacity_reservation_preference": "default",
+                "capacity_reservation_target": []
+              }
+            ],
+            "context": "",
+            "default_cooldown": 300,
+            "default_instance_warmup": 0,
+            "desired_capacity": 3,
+            "desired_capacity_type": "",
+            "enabled_metrics": null,
+            "force_delete": false,
+            "force_delete_warm_pool": false,
+            "health_check_grace_period": 120,
+            "health_check_type": "ELB",
+            "id": "pokeapi-asg",
+            "ignore_failed_scaling_activities": false,
+            "initial_lifecycle_hook": [],
+            "instance_maintenance_policy": [],
+            "instance_refresh": [],
+            "launch_configuration": "",
+            "launch_template": [
+              {
+                "id": "lt-01f22758ed59ca8e1",
+                "name": "pokeapi-lt-20251213163634704100000002",
+                "version": "$Latest"
+              }
+            ],
+            "load_balancers": [],
+            "max_instance_lifetime": 0,
+            "max_size": 3,
+            "metrics_granularity": "1Minute",
+            "min_elb_capacity": null,
+            "min_size": 3,
+            "mixed_instances_policy": [],
+            "name": "pokeapi-asg",
+            "name_prefix": "",
+            "placement_group": "",
+            "predicted_capacity": 0,
+            "protect_from_scale_in": false,
+            "service_linked_role_arn": "arn:aws:iam::767398146216:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling",
+            "suspended_processes": null,
+            "tag": [
+              {
+                "key": "Name",
+                "propagate_at_launch": true,
+                "value": "pokeapi-instance"
+              }
+            ],
+            "target_group_arns": [
+              "arn:aws:elasticloadbalancing:us-east-1:767398146216:targetgroup/pokeapi-tg/dffa6f94ac922f95"
+            ],
+            "termination_policies": null,
+            "timeouts": null,
+            "traffic_source": [
+              {
+                "identifier": "arn:aws:elasticloadbalancing:us-east-1:767398146216:targetgroup/pokeapi-tg/dffa6f94ac922f95",
+                "type": "elbv2"
+              }
+            ],
+            "vpc_zone_identifier": [
+              "subnet-04b63da678e282e7d",
+              "subnet-0725b9e17dcdef754"
+            ],
+            "wait_for_capacity_timeout": "10m",
+            "wait_for_elb_capacity": null,
+            "warm_pool": [],
+            "warm_pool_size": 0
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiZGVsZXRlIjo2MDAwMDAwMDAwMDAsInVwZGF0ZSI6NjAwMDAwMDAwMDAwfSwic2NoZW1hX3ZlcnNpb24iOiIxIn0=",
+          "dependencies": [
+            "aws_launch_template.lt",
+            "aws_lb_target_group.tg",
+            "aws_security_group.asg_sg",
+            "aws_subnet.public_a",
+            "aws_subnet.public_b",
+            "aws_vpc.main",
+            "data.aws_ami.amazon_linux"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_autoscaling_policy",
+      "name": "scale_out_cpu",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "adjustment_type": "ChangeInCapacity",
+            "arn": "arn:aws:autoscaling:us-east-1:767398146216:scalingPolicy:cf4962ec-868d-461a-b840-393ec91c551f:autoScalingGroupName/pokeapi-asg:policyName/scale-out-cpu",
+            "autoscaling_group_name": "pokeapi-asg",
+            "cooldown": 60,
+            "enabled": true,
+            "estimated_instance_warmup": 0,
+            "id": "scale-out-cpu",
+            "metric_aggregation_type": "",
+            "min_adjustment_magnitude": 0,
+            "name": "scale-out-cpu",
+            "policy_type": "SimpleScaling",
+            "predictive_scaling_configuration": [],
+            "scaling_adjustment": 1,
+            "step_adjustment": [],
+            "target_tracking_configuration": []
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_autoscaling_group.asg",
+            "aws_launch_template.lt",
+            "aws_lb_target_group.tg",
+            "aws_security_group.asg_sg",
+            "aws_subnet.public_a",
+            "aws_subnet.public_b",
+            "aws_vpc.main",
+            "data.aws_ami.amazon_linux"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_autoscaling_policy",
+      "name": "scale_out_memory",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "adjustment_type": "ChangeInCapacity",
+            "arn": "arn:aws:autoscaling:us-east-1:767398146216:scalingPolicy:741eed58-a2ee-44a3-8ad5-cfdd4a346200:autoScalingGroupName/pokeapi-asg:policyName/scale-out-memory",
+            "autoscaling_group_name": "pokeapi-asg",
+            "cooldown": 60,
+            "enabled": true,
+            "estimated_instance_warmup": 0,
+            "id": "scale-out-memory",
+            "metric_aggregation_type": "",
+            "min_adjustment_magnitude": 0,
+            "name": "scale-out-memory",
+            "policy_type": "SimpleScaling",
+            "predictive_scaling_configuration": [],
+            "scaling_adjustment": 1,
+            "step_adjustment": [],
+            "target_tracking_configuration": []
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_autoscaling_group.asg",
+            "aws_launch_template.lt",
+            "aws_lb_target_group.tg",
+            "aws_security_group.asg_sg",
+            "aws_subnet.public_a",
+            "aws_subnet.public_b",
+            "aws_vpc.main",
+            "data.aws_ami.amazon_linux"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_autoscaling_policy",
+      "name": "scale_out_network",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "adjustment_type": "ChangeInCapacity",
+            "arn": "arn:aws:autoscaling:us-east-1:767398146216:scalingPolicy:4b9e1376-c295-492e-ab28-ef9dc77cb46a:autoScalingGroupName/pokeapi-asg:policyName/scale-out-network",
+            "autoscaling_group_name": "pokeapi-asg",
+            "cooldown": 60,
+            "enabled": true,
+            "estimated_instance_warmup": 0,
+            "id": "scale-out-network",
+            "metric_aggregation_type": "",
+            "min_adjustment_magnitude": 0,
+            "name": "scale-out-network",
+            "policy_type": "SimpleScaling",
+            "predictive_scaling_configuration": [],
+            "scaling_adjustment": 1,
+            "step_adjustment": [],
+            "target_tracking_configuration": []
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_autoscaling_group.asg",
+            "aws_launch_template.lt",
+            "aws_lb_target_group.tg",
+            "aws_security_group.asg_sg",
+            "aws_subnet.public_a",
+            "aws_subnet.public_b",
+            "aws_vpc.main",
+            "data.aws_ami.amazon_linux"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_cloudwatch_metric_alarm",
+      "name": "cpu_high",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "actions_enabled": true,
+            "alarm_actions": null,
+            "alarm_description": "",
+            "alarm_name": "high-cpu",
+            "arn": "arn:aws:cloudwatch:us-east-1:767398146216:alarm:high-cpu",
+            "comparison_operator": "GreaterThanThreshold",
+            "datapoints_to_alarm": 0,
+            "dimensions": {
+              "AutoScalingGroupName": "pokeapi-asg"
+            },
+            "evaluate_low_sample_count_percentiles": "",
+            "evaluation_periods": 2,
+            "extended_statistic": "",
+            "id": "high-cpu",
+            "insufficient_data_actions": null,
+            "metric_name": "CPUUtilization",
+            "metric_query": [],
+            "namespace": "AWS/EC2",
+            "ok_actions": null,
+            "period": 60,
+            "statistic": "Average",
+            "tags": null,
+            "tags_all": {},
+            "threshold": 70,
+            "threshold_metric_id": "",
+            "treat_missing_data": "missing",
+            "unit": ""
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjEifQ==",
+          "dependencies": [
+            "aws_autoscaling_group.asg",
+            "aws_launch_template.lt",
+            "aws_lb_target_group.tg",
+            "aws_security_group.asg_sg",
+            "aws_subnet.public_a",
+            "aws_subnet.public_b",
+            "aws_vpc.main",
+            "data.aws_ami.amazon_linux"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_cloudwatch_metric_alarm",
+      "name": "memory_high",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "actions_enabled": true,
+            "alarm_actions": null,
+            "alarm_description": "",
+            "alarm_name": "high-memory",
+            "arn": "arn:aws:cloudwatch:us-east-1:767398146216:alarm:high-memory",
+            "comparison_operator": "GreaterThanThreshold",
+            "datapoints_to_alarm": 0,
+            "dimensions": {
+              "AutoScalingGroupName": "pokeapi-asg"
+            },
+            "evaluate_low_sample_count_percentiles": "",
+            "evaluation_periods": 2,
+            "extended_statistic": "",
+            "id": "high-memory",
+            "insufficient_data_actions": null,
+            "metric_name": "mem_used_percent",
+            "metric_query": [],
+            "namespace": "CWAgent",
+            "ok_actions": null,
+            "period": 60,
+            "statistic": "Average",
+            "tags": null,
+            "tags_all": {},
+            "threshold": 75,
+            "threshold_metric_id": "",
+            "treat_missing_data": "missing",
+            "unit": ""
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjEifQ==",
+          "dependencies": [
+            "aws_autoscaling_group.asg",
+            "aws_launch_template.lt",
+            "aws_lb_target_group.tg",
+            "aws_security_group.asg_sg",
+            "aws_subnet.public_a",
+            "aws_subnet.public_b",
+            "aws_vpc.main",
+            "data.aws_ami.amazon_linux"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_cloudwatch_metric_alarm",
+      "name": "network_high",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "actions_enabled": true,
+            "alarm_actions": null,
+            "alarm_description": "",
+            "alarm_name": "high-network-requests",
+            "arn": "arn:aws:cloudwatch:us-east-1:767398146216:alarm:high-network-requests",
+            "comparison_operator": "GreaterThanThreshold",
+            "datapoints_to_alarm": 0,
+            "dimensions": {
+              "LoadBalancer": "app/pokeapi-lb/3d47ba0cb38f85f9",
+              "TargetGroup": "targetgroup/pokeapi-tg/dffa6f94ac922f95"
+            },
+            "evaluate_low_sample_count_percentiles": "",
+            "evaluation_periods": 2,
+            "extended_statistic": "",
+            "id": "high-network-requests",
+            "insufficient_data_actions": null,
+            "metric_name": "RequestCountPerTarget",
+            "metric_query": [],
+            "namespace": "AWS/ApplicationELB",
+            "ok_actions": null,
+            "period": 60,
+            "statistic": "Sum",
+            "tags": null,
+            "tags_all": {},
+            "threshold": 100,
+            "threshold_metric_id": "",
+            "treat_missing_data": "missing",
+            "unit": ""
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjEifQ==",
+          "dependencies": [
+            "aws_lb.app_lb",
+            "aws_lb_target_group.tg",
+            "aws_security_group.asg_sg",
+            "aws_subnet.public_a",
+            "aws_subnet.public_b",
+            "aws_vpc.main"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_internet_gateway",
+      "name": "igw",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:ec2:us-east-1:767398146216:internet-gateway/igw-03ff491c4d2e04f04",
+            "id": "igw-03ff491c4d2e04f04",
+            "owner_id": "767398146216",
+            "tags": null,
+            "tags_all": {},
+            "timeouts": null,
+            "vpc_id": "vpc-0a21fcedb65ecdf74"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInVwZGF0ZSI6MTIwMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "aws_vpc.main"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_launch_template",
+      "name": "lt",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:ec2:us-east-1:767398146216:launch-template/lt-01f22758ed59ca8e1",
+            "block_device_mappings": [],
+            "capacity_reservation_specification": [],
+            "cpu_options": [],
+            "credit_specification": [],
+            "default_version": 1,
+            "description": "",
+            "disable_api_stop": false,
+            "disable_api_termination": false,
+            "ebs_optimized": "",
+            "elastic_gpu_specifications": [],
+            "elastic_inference_accelerator": [],
+            "enclave_options": [],
+            "hibernation_options": [],
+            "iam_instance_profile": [],
+            "id": "lt-01f22758ed59ca8e1",
+            "image_id": "ami-03f9680ef0c07a3d1",
+            "instance_initiated_shutdown_behavior": "",
+            "instance_market_options": [],
+            "instance_requirements": [],
+            "instance_type": "t2.micro",
+            "kernel_id": "",
+            "key_name": "",
+            "latest_version": 1,
+            "license_specification": [],
+            "maintenance_options": [],
+            "metadata_options": [],
+            "monitoring": [],
+            "name": "pokeapi-lt-20251213163634704100000002",
+            "name_prefix": "pokeapi-lt-",
+            "network_interfaces": [],
+            "placement": [],
+            "private_dns_name_options": [],
+            "ram_disk_id": "",
+            "security_group_names": null,
+            "tag_specifications": [],
+            "tags": null,
+            "tags_all": {},
+            "update_default_version": null,
+            "user_data": "IyEvYmluL2Jhc2gKIyBJbnN0YWxsIERvY2tlciwgY3VybCwgYW5kIEFXUyBDTEkKeXVtIHVwZGF0ZSAteQp5dW0gaW5zdGFsbCAteSBkb2NrZXIgY3VybCBhd3MtY2xpCnN5c3RlbWN0bCBlbmFibGUgZG9ja2VyCnN5c3RlbWN0bCBzdGFydCBkb2NrZXIKdXNlcm1vZCAtYUcgZG9ja2VyIGVjMi11c2VyCgojIEluc3RhbGwgRG9ja2VyIENvbXBvc2UKY3VybCAtTCAiaHR0cHM6Ly9naXRodWIuY29tL2RvY2tlci9jb21wb3NlL3JlbGVhc2VzL2xhdGVzdC9kb3dubG9hZC9kb2NrZXItY29tcG9zZS0kKHVuYW1lIC1zKS0kKHVuYW1lIC1tKSIgLW8gL3Vzci9sb2NhbC9iaW4vZG9ja2VyLWNvbXBvc2UKY2htb2QgK3ggL3Vzci9sb2NhbC9iaW4vZG9ja2VyLWNvbXBvc2UKCiMgUHJlcGFyZSBhcHAgZGlyZWN0b3J5Cm1rZGlyIC1wIC9ob21lL2VjMi11c2VyL2FwcApjZCAvaG9tZS9lYzItdXNlci9hcHAKCiMgRG93bmxvYWQgZG9ja2VyLWNvbXBvc2UueW1sIGZyb20gR2l0SHViCmN1cmwgLXMgLW8gZG9ja2VyLWNvbXBvc2UueW1sIGh0dHBzOi8vcmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbS9BbGV4YTEyMDkvUG9rZWFwaS9tYWluL2RvY2tlci1jb21wb3NlLnltbApzZWQgLWkgJy9edmVyc2lvbjovZCcgZG9ja2VyLWNvbXBvc2UueW1sCgojIPCfkYcg8J+RhyDwn5GHIEFHUkVHQURPOiBPYnRlbmVyIEROUyBkZWwgQUxCIHkgZ3VhcmRhciBlbiAuZW52IPCfkYcg8J+RhyDwn5GHCkFMQl9ETlM9JChhd3MgZWxidjIgZGVzY3JpYmUtbG9hZC1iYWxhbmNlcnMgXAogIC0tbmFtZXMgcG9rZWFwaS1sYiBcCiAgLS1xdWVyeSAnTG9hZEJhbGFuY2Vyc1swXS5ETlNOYW1lJyBcCiAgLS1vdXRwdXQgdGV4dCkKCiMgR3VhcmRhciBlbiBhcmNoaXZvIC5lbnYgKGRvY2tlci1jb21wb3NlIGxvIGxlZSBhdXRvbcOhdGljYW1lbnRlKQplY2hvICJBTEJfRE5TPSRBTEJfRE5TIiA+IC5lbnYKIyDwn5GGIPCfkYYg8J+RhiBGSU4gREUgTE8gQUdSRUdBRE8g8J+RhiDwn5GGIPCfkYYKCiMgUHVsbCBsYXRlc3QgaW1hZ2VzIGFuZCBzdGFydCBjb250YWluZXJzCmRvY2tlci1jb21wb3NlIHB1bGwKZG9ja2VyLWNvbXBvc2UgdXAgLWQ=",
+            "vpc_security_group_ids": [
+              "sg-0d58274bc10f675bf"
+            ]
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_security_group.asg_sg",
+            "aws_vpc.main",
+            "data.aws_ami.amazon_linux"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_lb_listener",
+      "name": "http",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "alpn_policy": null,
+            "arn": "arn:aws:elasticloadbalancing:us-east-1:767398146216:listener/app/pokeapi-lb/3d47ba0cb38f85f9/64b2c6e75c9cd864",
+            "certificate_arn": null,
+            "default_action": [
+              {
+                "authenticate_cognito": [],
+                "authenticate_oidc": [],
+                "fixed_response": [],
+                "forward": [],
+                "order": 1,
+                "redirect": [],
+                "target_group_arn": "arn:aws:elasticloadbalancing:us-east-1:767398146216:targetgroup/pokeapi-tg/dffa6f94ac922f95",
+                "type": "forward"
+              }
+            ],
+            "id": "arn:aws:elasticloadbalancing:us-east-1:767398146216:listener/app/pokeapi-lb/3d47ba0cb38f85f9/64b2c6e75c9cd864",
+            "load_balancer_arn": "arn:aws:elasticloadbalancing:us-east-1:767398146216:loadbalancer/app/pokeapi-lb/3d47ba0cb38f85f9",
+            "mutual_authentication": [],
+            "port": 80,
+            "protocol": "HTTP",
+            "routing_http_request_x_amzn_mtls_clientcert_header_name": null,
+            "routing_http_request_x_amzn_mtls_clientcert_issuer_header_name": null,
+            "routing_http_request_x_amzn_mtls_clientcert_leaf_header_name": null,
+            "routing_http_request_x_amzn_mtls_clientcert_serial_number_header_name": null,
+            "routing_http_request_x_amzn_mtls_clientcert_subject_header_name": null,
+            "routing_http_request_x_amzn_mtls_clientcert_validity_header_name": null,
+            "routing_http_request_x_amzn_tls_cipher_suite_header_name": null,
+            "routing_http_request_x_amzn_tls_version_header_name": null,
+            "routing_http_response_access_control_allow_credentials_header_value": "",
+            "routing_http_response_access_control_allow_headers_header_value": "",
+            "routing_http_response_access_control_allow_methods_header_value": "",
+            "routing_http_response_access_control_allow_origin_header_value": "",
+            "routing_http_response_access_control_expose_headers_header_value": "",
+            "routing_http_response_access_control_max_age_header_value": "",
+            "routing_http_response_content_security_policy_header_value": "",
+            "routing_http_response_server_enabled": true,
+            "routing_http_response_strict_transport_security_header_value": "",
+            "routing_http_response_x_content_type_options_header_value": "",
+            "routing_http_response_x_frame_options_header_value": "",
+            "ssl_policy": "",
+            "tags": null,
+            "tags_all": {},
+            "tcp_idle_timeout_seconds": null,
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjozMDAwMDAwMDAwMDAsInVwZGF0ZSI6MzAwMDAwMDAwMDAwfX0=",
+          "dependencies": [
+            "aws_lb.app_lb",
+            "aws_lb_target_group.tg",
+            "aws_security_group.asg_sg",
+            "aws_subnet.public_a",
+            "aws_subnet.public_b",
+            "aws_vpc.main"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_lb_target_group",
+      "name": "tg",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:elasticloadbalancing:us-east-1:767398146216:targetgroup/pokeapi-tg/dffa6f94ac922f95",
+            "arn_suffix": "targetgroup/pokeapi-tg/dffa6f94ac922f95",
+            "connection_termination": null,
+            "deregistration_delay": "300",
+            "health_check": [
+              {
+                "enabled": true,
+                "healthy_threshold": 2,
+                "interval": 30,
+                "matcher": "200-399",
+                "path": "/",
+                "port": "traffic-port",
+                "protocol": "HTTP",
+                "timeout": 5,
+                "unhealthy_threshold": 2
+              }
+            ],
+            "id": "arn:aws:elasticloadbalancing:us-east-1:767398146216:targetgroup/pokeapi-tg/dffa6f94ac922f95",
+            "ip_address_type": "ipv4",
+            "lambda_multi_value_headers_enabled": false,
+            "load_balancer_arns": [],
+            "load_balancing_algorithm_type": "round_robin",
+            "load_balancing_anomaly_mitigation": "off",
+            "load_balancing_cross_zone_enabled": "use_load_balancer_configuration",
+            "name": "pokeapi-tg",
+            "name_prefix": "",
+            "port": 80,
+            "preserve_client_ip": null,
+            "protocol": "HTTP",
+            "protocol_version": "HTTP1",
+            "proxy_protocol_v2": false,
+            "slow_start": 0,
+            "stickiness": [
+              {
+                "cookie_duration": 86400,
+                "cookie_name": "",
+                "enabled": false,
+                "type": "lb_cookie"
+              }
+            ],
+            "tags": null,
+            "tags_all": {},
+            "target_failover": [
+              {
+                "on_deregistration": null,
+                "on_unhealthy": null
+              }
+            ],
+            "target_group_health": [
+              {
+                "dns_failover": [
+                  {
+                    "minimum_healthy_targets_count": "1",
+                    "minimum_healthy_targets_percentage": "off"
+                  }
+                ],
+                "unhealthy_state_routing": [
+                  {
+                    "minimum_healthy_targets_count": 1,
+                    "minimum_healthy_targets_percentage": "off"
+                  }
+                ]
+              }
+            ],
+            "target_health_state": [
+              {
+                "enable_unhealthy_connection_termination": null,
+                "unhealthy_draining_interval": null
+              }
+            ],
+            "target_type": "instance",
+            "vpc_id": "vpc-0a21fcedb65ecdf74"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_vpc.main"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_route_table",
+      "name": "rt",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:ec2:us-east-1:767398146216:route-table/rtb-0fe1047b6f30ffa8e",
+            "id": "rtb-0fe1047b6f30ffa8e",
+            "owner_id": "767398146216",
+            "propagating_vgws": [],
+            "route": [
+              {
+                "carrier_gateway_id": "",
+                "cidr_block": "0.0.0.0/0",
+                "core_network_arn": "",
+                "destination_prefix_list_id": "",
+                "egress_only_gateway_id": "",
+                "gateway_id": "igw-03ff491c4d2e04f04",
+                "ipv6_cidr_block": "",
+                "local_gateway_id": "",
+                "nat_gateway_id": "",
+                "network_interface_id": "",
+                "transit_gateway_id": "",
+                "vpc_endpoint_id": "",
+                "vpc_peering_connection_id": ""
+              }
+            ],
+            "tags": null,
+            "tags_all": {},
+            "timeouts": null,
+            "vpc_id": "vpc-0a21fcedb65ecdf74"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjozMDAwMDAwMDAwMDAsImRlbGV0ZSI6MzAwMDAwMDAwMDAwLCJ1cGRhdGUiOjEyMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "aws_internet_gateway.igw",
+            "aws_vpc.main"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_route_table_association",
+      "name": "a",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "gateway_id": "",
+            "id": "rtbassoc-0cf2af0915fc860f1",
+            "route_table_id": "rtb-0fe1047b6f30ffa8e",
+            "subnet_id": "subnet-04b63da678e282e7d",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjozMDAwMDAwMDAwMDAsImRlbGV0ZSI6MzAwMDAwMDAwMDAwLCJ1cGRhdGUiOjEyMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "aws_internet_gateway.igw",
+            "aws_route_table.rt",
+            "aws_subnet.public_a",
+            "aws_vpc.main"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_route_table_association",
+      "name": "b",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "gateway_id": "",
+            "id": "rtbassoc-04adac8423d52656b",
+            "route_table_id": "rtb-0fe1047b6f30ffa8e",
+            "subnet_id": "subnet-0725b9e17dcdef754",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjozMDAwMDAwMDAwMDAsImRlbGV0ZSI6MzAwMDAwMDAwMDAwLCJ1cGRhdGUiOjEyMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "aws_internet_gateway.igw",
+            "aws_route_table.rt",
+            "aws_subnet.public_b",
+            "aws_vpc.main"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_security_group",
+      "name": "asg_sg",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:us-east-1:767398146216:security-group/sg-0d58274bc10f675bf",
+            "description": "Allow HTTP, HTTPS and SSH",
+            "egress": [
+              {
+                "cidr_blocks": [
+                  "0.0.0.0/0"
+                ],
+                "description": "",
+                "from_port": 0,
+                "ipv6_cidr_blocks": [],
+                "prefix_list_ids": [],
+                "protocol": "-1",
+                "security_groups": [],
+                "self": false,
+                "to_port": 0
+              }
+            ],
+            "id": "sg-0d58274bc10f675bf",
+            "ingress": [
+              {
+                "cidr_blocks": [
+                  "0.0.0.0/0"
+                ],
+                "description": "HTTP",
+                "from_port": 80,
+                "ipv6_cidr_blocks": [],
+                "prefix_list_ids": [],
+                "protocol": "tcp",
+                "security_groups": [],
+                "self": false,
+                "to_port": 80
+              },
+              {
+                "cidr_blocks": [
+                  "0.0.0.0/0"
+                ],
+                "description": "HTTPS",
+                "from_port": 443,
+                "ipv6_cidr_blocks": [],
+                "prefix_list_ids": [],
+                "protocol": "tcp",
+                "security_groups": [],
+                "self": false,
+                "to_port": 443
+              },
+              {
+                "cidr_blocks": [
+                  "0.0.0.0/0"
+                ],
+                "description": "SSH",
+                "from_port": 22,
+                "ipv6_cidr_blocks": [],
+                "prefix_list_ids": [],
+                "protocol": "tcp",
+                "security_groups": [],
+                "self": false,
+                "to_port": 22
+              }
+            ],
+            "name": "pokeapi-sg",
+            "name_prefix": "",
+            "owner_id": "767398146216",
+            "revoke_rules_on_delete": false,
+            "tags": {
+              "Name": "pokeapi-sg"
+            },
+            "tags_all": {
+              "Name": "pokeapi-sg"
+            },
+            "timeouts": null,
+            "vpc_id": "vpc-0a21fcedb65ecdf74"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6OTAwMDAwMDAwMDAwfSwic2NoZW1hX3ZlcnNpb24iOiIxIn0=",
+          "dependencies": [
+            "aws_vpc.main"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_subnet",
+      "name": "public_a",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:us-east-1:767398146216:subnet/subnet-04b63da678e282e7d",
+            "assign_ipv6_address_on_creation": false,
+            "availability_zone": "us-east-1a",
+            "availability_zone_id": "use1-az1",
+            "cidr_block": "10.0.1.0/24",
+            "customer_owned_ipv4_pool": "",
+            "enable_dns64": false,
+            "enable_lni_at_device_index": 0,
+            "enable_resource_name_dns_a_record_on_launch": false,
+            "enable_resource_name_dns_aaaa_record_on_launch": false,
+            "id": "subnet-04b63da678e282e7d",
+            "ipv6_cidr_block": "",
+            "ipv6_cidr_block_association_id": "",
+            "ipv6_native": false,
+            "map_customer_owned_ip_on_launch": false,
+            "map_public_ip_on_launch": true,
+            "outpost_arn": "",
+            "owner_id": "767398146216",
+            "private_dns_hostname_type_on_launch": "ip-name",
+            "tags": null,
+            "tags_all": {},
+            "timeouts": null,
+            "vpc_id": "vpc-0a21fcedb65ecdf74"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6MTIwMDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiMSJ9",
+          "dependencies": [
+            "aws_vpc.main"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_subnet",
+      "name": "public_b",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:us-east-1:767398146216:subnet/subnet-0725b9e17dcdef754",
+            "assign_ipv6_address_on_creation": false,
+            "availability_zone": "us-east-1b",
+            "availability_zone_id": "use1-az2",
+            "cidr_block": "10.0.2.0/24",
+            "customer_owned_ipv4_pool": "",
+            "enable_dns64": false,
+            "enable_lni_at_device_index": 0,
+            "enable_resource_name_dns_a_record_on_launch": false,
+            "enable_resource_name_dns_aaaa_record_on_launch": false,
+            "id": "subnet-0725b9e17dcdef754",
+            "ipv6_cidr_block": "",
+            "ipv6_cidr_block_association_id": "",
+            "ipv6_native": false,
+            "map_customer_owned_ip_on_launch": false,
+            "map_public_ip_on_launch": true,
+            "outpost_arn": "",
+            "owner_id": "767398146216",
+            "private_dns_hostname_type_on_launch": "ip-name",
+            "tags": null,
+            "tags_all": {},
+            "timeouts": null,
+            "vpc_id": "vpc-0a21fcedb65ecdf74"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6MTIwMDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiMSJ9",
+          "dependencies": [
+            "aws_vpc.main"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_vpc",
+      "name": "main",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:us-east-1:767398146216:vpc/vpc-0a21fcedb65ecdf74",
+            "assign_generated_ipv6_cidr_block": false,
+            "cidr_block": "10.0.0.0/16",
+            "default_network_acl_id": "acl-087401db7a4dc022c",
+            "default_route_table_id": "rtb-04dd6d95140a4e85f",
+            "default_security_group_id": "sg-017e0eda3bdd8e1c1",
+            "dhcp_options_id": "dopt-067a7ef191f01d428",
+            "enable_dns_hostnames": true,
+            "enable_dns_support": true,
+            "enable_network_address_usage_metrics": false,
+            "id": "vpc-0a21fcedb65ecdf74",
+            "instance_tenancy": "default",
+            "ipv4_ipam_pool_id": null,
+            "ipv4_netmask_length": null,
+            "ipv6_association_id": "",
+            "ipv6_cidr_block": "",
+            "ipv6_cidr_block_network_border_group": "",
+            "ipv6_ipam_pool_id": "",
+            "ipv6_netmask_length": 0,
+            "main_route_table_id": "rtb-04dd6d95140a4e85f",
+            "owner_id": "767398146216",
+            "tags": {
+              "Name": "pokeapi-vpc"
+            },
+            "tags_all": {
+              "Name": "pokeapi-vpc"
+            }
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjEifQ=="
+        }
+      ]
+    }
+  ],
+  "check_results": null
+}

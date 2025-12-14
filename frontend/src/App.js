@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Login from "./components/Login";
 import Cards from "./components/Cards";
-const BACKEND_URL = "/api"
+const BACKEND_URL = window.RUNTIME_CONFIG?.BACKEND_URL || "/api";
 
 console.log("Backend URL:", BACKEND_URL);
 
