@@ -1,22 +1,35 @@
 #!/bin/bash
-# Install Docker and docker-compose
+set -e
+
+# Actualizar sistema
 yum update -y
-yum install -y docker curl
-systemctl enable docker
-systemctl start docker
+
+# Instalar Docker
+yum install -y docker
+
+# Iniciar Docker
+service docker start
+chkconfig docker on
+
+# Permitir docker sin sudo
 usermod -aG docker ec2-user
 
-curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+# Instalar docker-compose
+curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) \
+  -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 
-# Download docker and run the app
+# Crear carpeta de la app
 mkdir -p /home/ec2-user/app
 cd /home/ec2-user/app
-curl -s -o docker-compose.yml https://raw.githubusercontent.com/AlexaD09/Pokeapi/main/docker-compose.yml
 
+# Descargar TU docker-compose.yml
+curl -L https://raw.githubusercontent.com/AlexaD09/Pokeapi/main/docker-compose.yml \
+  -o docker-compose.yml
 
+# Quitar version (para compatibilidad)
 sed -i '/^version:/d' docker-compose.yml
 
-# start the application
-docker-compose pull
-docker-compose up -d
+# Levantar contenedores
+/usr/local/bin/docker-compose pull
+/usr/local/bin/docker-compose up -d
