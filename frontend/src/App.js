@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import './App.css';
 import Login from "./components/Login";
 import Cards from "./components/Cards";
 const BACKEND_URL = window.RUNTIME_CONFIG?.BACKEND_URL || "/api";
