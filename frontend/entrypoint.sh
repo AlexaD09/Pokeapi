@@ -1,7 +1,11 @@
 #!/bin/sh
 
-# Usa la variable de entorno ALB_DNS (pasada desde docker-compose)
-BACKEND_URL="http://${ALB_DNS}"
+# Si ALB_DNS no está definida, usa /api (rutas relativas)
+if [ -z "$ALB_DNS" ]; then
+  BACKEND_URL="/api"
+else
+  BACKEND_URL="http://$ALB_DNS"
+fi
 
 echo "window.RUNTIME_CONFIG = {
   BACKEND_URL: \"$BACKEND_URL\"
