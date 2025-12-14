@@ -1,10 +1,17 @@
 #!/bin/bash
 set -e
 
-dnf update -y
-dnf install -y docker
-systemctl start docker
-systemctl enable docker
+# Actualizar sistema
+yum update -y
+
+# Instalar Docker
+yum install -y docker
+
+# Iniciar Docker
+service docker start
+chkconfig docker on
+
+# Permitir docker sin sudo
 usermod -aG docker ec2-user
 
 curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) \
