@@ -7,7 +7,7 @@ function Login({ onLogin, onRegister, error }) {
 
   return (
     <div className="auth-container">
-      <h1>🔐 Log in to see Pokémon</h1>
+      <h1>🔐 Pokémon</h1>
       <form
         onSubmit={(e) => {
           e.preventDefault();
