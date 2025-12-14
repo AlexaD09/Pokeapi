@@ -14,7 +14,8 @@ chmod +x /usr/local/bin/docker-compose
 mkdir -p /home/ec2-user/app
 cd /home/ec2-user/app
 
-curl -s -o docker-compose.yml \ https://raw.githubusercontent.com/AlexaD09/Pokeapi/main/docker-compose.yml
+curl -s -o docker-compose.yml https://raw.githubusercontent.com/AlexaD09/Pokeapi/main/docker-compose.yml
+
 
 /usr/local/bin/docker-compose pull
 /usr/local/bin/docker-compose up -d

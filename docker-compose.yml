@@ -22,7 +22,8 @@ services:
   backend:
     image: alexa1209/pokeapi-app-backend:latest
     container_name: pokemon-backend
-    
+    ports:
+      - "8000:8000"
     environment:
       - DATABASE_URL=postgresql://postgres:Liliana0912@db:5432/pokemon_db
     depends_on:
