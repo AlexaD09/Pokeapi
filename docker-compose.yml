@@ -8,7 +8,6 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: Liliana0912
       POSTGRES_DB: pokemon_db
-    
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
@@ -17,18 +16,16 @@ services:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 10
 
   backend:
     image: alexa1209/pokeapi-app-backend:latest
     container_name: pokemon-backend
-    ports:
-      - "8000:8000"
     environment:
       - DATABASE_URL=postgresql://postgres:Liliana0912@db:5432/pokemon_db
     depends_on:
-      - db
-        
+      db:
+        condition: service_healthy
     networks:
       - pokemon-net
 
@@ -37,15 +34,15 @@ services:
     container_name: pokemon-frontend
     ports:
       - "80:80"
-    
-    
+    depends_on:
+      - backend
     networks:
       - pokemon-net
 
-
 networks:
   pokemon-net:
-    driver: bridge
+    driver: bridge 
 
 volumes:
   postgres_data:
+ 
